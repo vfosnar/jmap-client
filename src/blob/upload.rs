@@ -62,7 +62,6 @@ impl Client {
         serde_json::from_slice::<UploadResponse>(
             &Client::handle_error(
                 HttpClient::builder()
-                    .danger_accept_invalid_certs(self.accept_invalid_certs)
                     .default_headers(self.headers().clone())
                     .build()?
                     .post(upload_url)

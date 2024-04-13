@@ -143,19 +143,6 @@ impl ClientBuilder {
         self
     }
 
-    /// Accepts invalid certificates for all the requests to the JMAP API.
-    ///
-    /// By default certificates are validated.
-    ///
-    /// # Warning
-    /// **It is not suggested to use this approach in production;** this method should be used only for testing and as a last resort.
-    ///
-    /// [Read more in the reqwest docs](https://docs.rs/reqwest/latest/reqwest/struct.ClientBuilder.html#method.danger_accept_invalid_certs)
-    pub fn accept_invalid_certs(mut self, accept_invalid_certs: bool) -> Self {
-        self.accept_invalid_certs = accept_invalid_certs;
-        self
-    }
-
     /// Set a list of trusted hosts that will be checked when a redirect is required.
     ///
     /// The list can be changed after the `Client` has been created by using [Client.set_follow_redirects()](struct.Client.html#method.set_follow_redirects).
@@ -210,7 +197,6 @@ impl ClientBuilder {
         let session: Session = serde_json::from_slice(
             &Client::handle_error(
                 HttpClient::builder()
-                    .danger_accept_invalid_certs(self.accept_invalid_certs)
                     .default_headers(headers.clone())
                     .build()?
                     .get(&session_url)
@@ -301,7 +287,6 @@ impl Client {
         let response: response::Response<R> = serde_json::from_slice(
             &Client::handle_error(
                 HttpClient::builder()
-                    .danger_accept_invalid_certs(self.accept_invalid_certs)
                     .default_headers(self.headers.clone())
                     .build()?
                     .post(&self.api_url)
@@ -326,7 +311,6 @@ impl Client {
         let session: Session = serde_json::from_slice(
             &Client::handle_error(
                 HttpClient::builder()
-                    .danger_accept_invalid_certs(self.accept_invalid_certs)
                     .default_headers(self.headers.clone())
                     .build()?
                     .get(&self.session_url)

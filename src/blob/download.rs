@@ -53,7 +53,6 @@ impl Client {
 
         Client::handle_error(
             HttpClient::builder()
-                .danger_accept_invalid_certs(self.accept_invalid_certs)
                 .default_headers(headers)
                 .build()?
                 .get(download_url)

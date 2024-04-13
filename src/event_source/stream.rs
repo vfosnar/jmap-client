@@ -71,7 +71,6 @@ impl Client {
 
         let mut stream = Client::handle_error(
             reqwest_wasm::Client::builder()
-                .danger_accept_invalid_certs(self.accept_invalid_certs)
                 .default_headers(headers)
                 .build()?
                 .get(event_source_url)
