@@ -11,7 +11,7 @@
 
 use crate::{client::Client, core::session::URLPart, event_source::parser::EventParser, TypeState};
 use futures_util::{Stream, StreamExt};
-use reqwest::header::{HeaderValue, ACCEPT, CONTENT_TYPE};
+use reqwest_wasm::header::{HeaderValue, ACCEPT, CONTENT_TYPE};
 
 use super::Changes;
 
@@ -70,7 +70,7 @@ impl Client {
         }
 
         let mut stream = Client::handle_error(
-            reqwest::Client::builder()
+            reqwest_wasm::Client::builder()
                 .connect_timeout(self.timeout())
                 .danger_accept_invalid_certs(self.accept_invalid_certs)
                 .redirect(self.redirect_policy())

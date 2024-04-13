@@ -20,13 +20,13 @@ use std::{
 
 use ahash::AHashSet;
 #[cfg(feature = "blocking")]
-use reqwest::blocking::{Client as HttpClient, Response};
-use reqwest::{
+use reqwest_wasm::blocking::{Client as HttpClient, Response};
+use reqwest_wasm::{
     header::{self},
     redirect,
 };
 #[cfg(feature = "async")]
-use reqwest::{Client as HttpClient, Response};
+use reqwest_wasm::{Client as HttpClient, Response};
 
 use serde::de::DeserializeOwned;
 

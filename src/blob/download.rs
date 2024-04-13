@@ -9,14 +9,14 @@
  * except according to those terms.
  */
 
-use reqwest::header::CONTENT_TYPE;
+use reqwest_wasm::header::CONTENT_TYPE;
 
 use crate::{client::Client, core::session::URLPart};
 
 #[cfg(feature = "blocking")]
-use reqwest::blocking::Client as HttpClient;
+use reqwest_wasm::blocking::Client as HttpClient;
 #[cfg(feature = "async")]
-use reqwest::Client as HttpClient;
+use reqwest_wasm::Client as HttpClient;
 
 impl Client {
     #[maybe_async::maybe_async]

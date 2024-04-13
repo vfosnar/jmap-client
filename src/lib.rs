@@ -362,7 +362,7 @@ pub type Result<T> = std::result::Result<T, Error>;
 
 #[derive(Debug)]
 pub enum Error {
-    Transport(reqwest::Error),
+    Transport(reqwest_wasm::Error),
     Parse(serde_json::Error),
     Internal(String),
     Problem(Box<ProblemDetails>),
@@ -375,8 +375,8 @@ pub enum Error {
 
 impl std::error::Error for Error {}
 
-impl From<reqwest::Error> for Error {
-    fn from(e: reqwest::Error) -> Self {
+impl From<reqwest_wasm::Error> for Error {
+    fn from(e: reqwest_wasm::Error) -> Self {
         Error::Transport(e)
     }
 }
