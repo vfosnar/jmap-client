@@ -21,10 +21,7 @@ use std::{
 use ahash::AHashSet;
 #[cfg(feature = "blocking")]
 use reqwest_wasm::blocking::{Client as HttpClient, Response};
-use reqwest_wasm::{
-    header::{self},
-    redirect,
-};
+use reqwest_wasm::header::{self};
 #[cfg(feature = "async")]
 use reqwest_wasm::{Client as HttpClient, Response};
 
@@ -213,22 +210,7 @@ impl ClientBuilder {
         let session: Session = serde_json::from_slice(
             &Client::handle_error(
                 HttpClient::builder()
-                    .timeout(self.timeout)
                     .danger_accept_invalid_certs(self.accept_invalid_certs)
-                    .redirect(redirect::Policy::custom(move |attempt| {
-                        if attempt.previous().len() > 5 {
-                            attempt.error("Too many redirects.")
-                        } else if matches!( attempt.url().host_str(), Some(host) if trusted_hosts_.contains(host) )
-                        {
-                                attempt.follow()
-                        } else {
-                            let message = format!(
-                                "Aborting redirect request to unknown host '{}'.",
-                                attempt.url().host_str().unwrap_or("")
-                            );
-                            attempt.error(message)
-                        }
-                    }))
                     .default_headers(headers.clone())
                     .build()?
                     .get(&session_url)
@@ -308,24 +290,6 @@ impl Client {
         &self.headers
     }
 
-    pub(crate) fn redirect_policy(&self) -> redirect::Policy {
-        let trusted_hosts = self.trusted_hosts.clone();
-        redirect::Policy::custom(move |attempt| {
-            if attempt.previous().len() > 5 {
-                attempt.error("Too many redirects.")
-            } else if matches!( attempt.url().host_str(), Some(host) if trusted_hosts.contains(host) )
-            {
-                attempt.follow()
-            } else {
-                let message = format!(
-                    "Aborting redirect request to unknown host '{}'.",
-                    attempt.url().host_str().unwrap_or("")
-                );
-                attempt.error(message)
-            }
-        })
-    }
-
     #[maybe_async::maybe_async]
     pub async fn send<R>(
         &self,
@@ -337,9 +301,7 @@ impl Client {
         let response: response::Response<R> = serde_json::from_slice(
             &Client::handle_error(
                 HttpClient::builder()
-                    .redirect(self.redirect_policy())
                     .danger_accept_invalid_certs(self.accept_invalid_certs)
-                    .timeout(self.timeout)
                     .default_headers(self.headers.clone())
                     .build()?
                     .post(&self.api_url)
@@ -364,9 +326,7 @@ impl Client {
         let session: Session = serde_json::from_slice(
             &Client::handle_error(
                 HttpClient::builder()
-                    .timeout(Duration::from_millis(DEFAULT_TIMEOUT_MS))
                     .danger_accept_invalid_certs(self.accept_invalid_certs)
-                    .redirect(self.redirect_policy())
                     .default_headers(self.headers.clone())
                     .build()?
                     .get(&self.session_url)

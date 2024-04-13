@@ -53,9 +53,7 @@ impl Client {
 
         Client::handle_error(
             HttpClient::builder()
-                .timeout(self.timeout())
                 .danger_accept_invalid_certs(self.accept_invalid_certs)
-                .redirect(self.redirect_policy())
                 .default_headers(headers)
                 .build()?
                 .get(download_url)
